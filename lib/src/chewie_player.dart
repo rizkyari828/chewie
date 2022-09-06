@@ -92,17 +92,53 @@ class ChewieState extends State<Chewie> {
     );
   }
 
+  void exitAndBack() {
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      widget.controller.fromRoute ?? "",
+      ModalRoute.withName(widget.controller.fromRoute ?? ""),
+    );
+    Navigator.of(context).pop();
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  }
+
   Widget _buildFullScreenVideo(
     BuildContext context,
     Animation<double> animation,
     ChewieControllerProvider controllerProvider,
   ) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Container(
-        alignment: Alignment.center,
-        color: Colors.black,
-        child: controllerProvider,
+    return WillPopScope(
+      onWillPop: () async {
+        exitAndBack();
+        return Future<bool>.value(true);
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          iconTheme:
+              const IconThemeData(color: Color.fromRGBO(255, 255, 255, 1.0)),
+          actionsIconTheme:
+              const IconThemeData(color: Color.fromRGBO(255, 255, 255, 1.0)),
+          elevation: 0.1,
+          backgroundColor: const Color.fromRGBO(0, 0, 0, 1.0),
+          title: Text(
+            widget.controller.title,
+            style: const TextStyle(
+              fontFamily: "MMCOFFICE-Regular",
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          leading: IconButton(
+            onPressed: () {
+              exitAndBack();
+            },
+            icon: const Icon(Icons.arrow_back),
+          ),
+        ),
+        resizeToAvoidBottomInset: false,
+        body: Container(
+          alignment: Alignment.center,
+          color: Colors.black,
+          child: controllerProvider,
+        ),
       ),
     );
   }
@@ -283,6 +319,8 @@ class ChewieController extends ChangeNotifier {
     this.routePageBuilder,
     this.progressIndicatorDelay,
     this.hideControlsTimer = defaultHideControlsTimer,
+    this.title = "Default",
+    this.fromRoute,
   }) : assert(
           playbackSpeeds.every((speed) => speed > 0),
           'The playbackSpeeds values must all be greater than 0',
@@ -521,6 +559,10 @@ class ChewieController extends ChangeNotifier {
 
   /// Defines a custom RoutePageBuilder for the fullscreen
   final ChewieRoutePageBuilder? routePageBuilder;
+
+  final String title;
+
+  final String? fromRoute;
 
   /// Defines a delay in milliseconds between entering buffering state and displaying the loading spinner. Set null (default) to disable it.
   final Duration? progressIndicatorDelay;
