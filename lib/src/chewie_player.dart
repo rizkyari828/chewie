@@ -92,7 +92,7 @@ class ChewieState extends State<Chewie> {
     );
   }
 
-  void exitAndBack() {
+  void exitAndBack(BuildContext context) {
     Navigator.of(context).pushNamedAndRemoveUntil(
       widget.controller.fromRoute ?? "",
       ModalRoute.withName(widget.controller.fromRoute ?? ""),
@@ -108,7 +108,7 @@ class ChewieState extends State<Chewie> {
   ) {
     return WillPopScope(
       onWillPop: () async {
-        exitAndBack();
+        exitAndBack(context);
         return Future<bool>.value(true);
       },
       child: Scaffold(
@@ -128,7 +128,7 @@ class ChewieState extends State<Chewie> {
           ),
           leading: IconButton(
             onPressed: () {
-              exitAndBack();
+              exitAndBack(context);
             },
             icon: const Icon(Icons.arrow_back),
           ),
