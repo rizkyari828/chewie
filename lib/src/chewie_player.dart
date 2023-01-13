@@ -324,7 +324,7 @@ class ChewieController extends ChangeNotifier {
     this.progressIndicatorDelay,
     this.hideControlsTimer = defaultHideControlsTimer,
     this.title = "Default",
-    this.fromRoute,
+    this.fromRoute = "",
   }) : assert(
           playbackSpeeds.every((speed) => speed > 0),
           'The playbackSpeeds values must all be greater than 0',
@@ -566,7 +566,7 @@ class ChewieController extends ChangeNotifier {
 
   final String title;
 
-  final String? fromRoute;
+  final String fromRoute;
 
   /// Defines a delay in milliseconds between entering buffering state and displaying the loading spinner. Set null (default) to disable it.
   final Duration? progressIndicatorDelay;
